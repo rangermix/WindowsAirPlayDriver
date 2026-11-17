@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A87E7206-D501-46F6-8B60-48A2B26DC12B}</ProjectGuid>
+    <RootNamespace>WinAirPlayAudio</RootNamespace>
+    <ProjectName>WinAirPlayAudio</ProjectName>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">x64</Platform>
+    <KMDF_VERSION_MAJOR>1</KMDF_VERSION_MAJOR>
+    <SupportsPackaging>false</SupportsPackaging>
+    <RequiresPackageProject>true</RequiresPackageProject>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <ConfigurationType>Driver</ConfigurationType>
+    <DriverType>KMDF</DriverType>
+    <DriverTargetPlatform>Windows Driver</DriverTargetPlatform>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
+    <TargetVersion>Windows10</TargetVersion>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <ConfigurationType>Driver</ConfigurationType>
+    <DriverType>KMDF</DriverType>
+    <DriverTargetPlatform>Windows Driver</DriverTargetPlatform>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
+    <TargetVersion>Windows10</TargetVersion>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+            Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+            Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)out\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>WinAirPlayAudio</TargetName>
+    <GenerateManifest>false</GenerateManifest>
+    <SignMode>Off</SignMode>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Inc;$(ProjectDir)Source\Filters;$(ProjectDir)Source\Main;$(ProjectDir)Source\Utilities;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;UNICODE;_UNICODE;PC_IMPLEMENTATION;_USE_WAVERT_;_USE_IPortClsRuntimePower;_NEW_DELETE_OPERATORS_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>false</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4595;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>portcls.lib;stdunk.lib;libcntpr.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/PDBALTPATH:%_PDB% %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <DriverSign>
+      <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
+    </DriverSign>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUGLVL_TERSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)' == 'Release'">
+    <ClCompile>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUGLVL_ERROR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Main\adapter.cpp" />
+    <ClCompile Include="Source\Main\basetopo.cpp" />
+    <ClCompile Include="Source\Main\common.cpp" />
+    <ClCompile Include="Source\Main\mintopo.cpp" />
+    <ClCompile Include="Source\Main\minwavert.cpp" />
+    <ClCompile Include="Source\Main\minwavertstream.cpp" />
+    <ClCompile Include="Source\Main\NewDelete.cpp" />
+    <ClCompile Include="Source\Filters\speakertopo.cpp" />
+    <ClCompile Include="Source\Utilities\hw.cpp" />
+    <ClCompile Include="Source\Utilities\kshelper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Inc\basetopo.h" />
+    <ClInclude Include="Source\Inc\common.h" />
+    <ClInclude Include="Source\Inc\definitions.h" />
+    <ClInclude Include="Source\Inc\endpoints.h" />
+    <ClInclude Include="Source\Inc\kshelper.h" />
+    <ClInclude Include="Source\Inc\metadata.h" />
+    <ClInclude Include="Source\Inc\mintopo.h" />
+    <ClInclude Include="Source\Inc\NewDelete.h" />
+    <ClInclude Include="Source\Inc\version.h" />
+    <ClInclude Include="Source\Main\minwavert.h" />
+    <ClInclude Include="Source\Main\minwavertstream.h" />
+    <ClInclude Include="Source\Filters\minipairs.h" />
+    <ClInclude Include="Source\Filters\speakertopo.h" />
+    <ClInclude Include="Source\Filters\speakertoptable.h" />
+    <ClInclude Include="Source\Filters\speakerwavtable.h" />
+    <ClInclude Include="Source\Utilities\hw.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="WinAirPlayAudio.rc" />
+    <Inf Include="WinAirPlayAudio.inx">
+      <DateStamp>11/04/2026</DateStamp>
+      <TimeStamp>0.1.1.2</TimeStamp>
+    </Inf>
+    <FilesToPackage Include="$(TargetPath)" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

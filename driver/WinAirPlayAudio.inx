@@ -1,0 +1,124 @@
+;
+; Copyright (c) Microsoft Corporation. All rights reserved.
+;
+; Adapted from the Microsoft Windows Driver Samples SimpleAudioSample at
+; commit 2ee527bfeb0aeb6be11f0a8b6dce4011b358ce89.
+;
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = MEDIA
+Provider    = %ProviderName%
+ClassGUID   = {4d36e96c-e325-11ce-bfc1-08002be10318}
+DriverVer   = 11/04/2026,0.1.1.2
+CatalogFile = WinAirPlayAudio.cat
+PnpLockDown = 1
+
+[SourceDisksNames]
+222 = %DiskName%,,222
+
+[SourceDisksFiles]
+WinAirPlayAudio.sys = 222
+
+[Manufacturer]
+%ManufacturerName% = WinAirPlayAudio,NTamd64.10.0...26100
+
+[WinAirPlayAudio.NTamd64.10.0...26100]
+%WinAirPlayAudio.DeviceDesc% = WinAirPlayAudio_Device, ROOT\WinAirPlayAudio
+
+[DestinationDirs]
+WinAirPlayAudio.CopyList = 13
+
+[WinAirPlayAudio.CopyList]
+WinAirPlayAudio.sys
+
+[WinAirPlayAudio.AddReg]
+HKR,,AssociatedFilters,,"wdmaud"
+HKR,,Driver,,WinAirPlayAudio.sys
+HKR,Drivers,SubClasses,,"wave,mixer"
+HKR,Drivers\wave\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\mixer\wdmaud.drv,Driver,,wdmaud.drv
+HKR,Drivers\wave\wdmaud.drv,Description,,%WinAirPlayAudio.DeviceDesc%
+HKR,Drivers\mixer\wdmaud.drv,Description,,%WinAirPlayAudio.DeviceDesc%
+
+; The service supplies a unique SW_DEVICE_CREATE_INFO.pContainerId, the standard
+; parent DEVPKEY_Device_FriendlyName, and custom ReceiverId/ReceiverDisplayName
+; values for each receiver. AudioEndpointBuilder uses the parent friendly name
+; for the MMDevice suffix. The driver also copies the private metadata to its KS
+; interfaces for diagnostics. This static value remains the package fallback.
+[WinAirPlayAudio.I.Wave]
+AddReg = WinAirPlayAudio.I.Wave.AddReg
+
+[WinAirPlayAudio.I.Wave.AddReg]
+HKR,,CLSID,,%Proxy.CLSID%
+HKR,,FriendlyName,,%WinAirPlayAudio.Wave.FriendlyName%
+
+[WinAirPlayAudio.I.Topology]
+AddReg = WinAirPlayAudio.I.Topology.AddReg
+
+[WinAirPlayAudio.I.Topology.AddReg]
+HKR,,CLSID,,%Proxy.CLSID%
+HKR,,FriendlyName,,%WinAirPlayAudio.Topology.FriendlyName%
+HKR,EP\0,%PKEY_AudioEndpoint_Association%,,%KSNODETYPE_ANY%
+HKR,EP\0,%PKEY_AudioEndpoint_Supports_EventDriven_Mode%,0x00010001,0x1
+
+[WinAirPlayAudio_Device.NT]
+Include = ks.inf,wdmaudio.inf
+Needs = KS.Registration,WDMAUDIO.Registration
+CopyFiles = WinAirPlayAudio.CopyList
+AddReg = WinAirPlayAudio.AddReg
+
+[WinAirPlayAudio_Device.NT.Interfaces]
+AddInterface = %KSCATEGORY_AUDIO%,%KSNAME_Wave%,WinAirPlayAudio.I.Wave
+AddInterface = %KSCATEGORY_RENDER%,%KSNAME_Wave%,WinAirPlayAudio.I.Wave
+AddInterface = %KSCATEGORY_REALTIME%,%KSNAME_Wave%,WinAirPlayAudio.I.Wave
+AddInterface = %KSCATEGORY_AUDIO%,%KSNAME_Topology%,WinAirPlayAudio.I.Topology
+AddInterface = %KSCATEGORY_TOPOLOGY%,%KSNAME_Topology%,WinAirPlayAudio.I.Topology
+
+[WinAirPlayAudio_Device.NT.Services]
+AddService = WinAirPlayAudio,0x00000002,WinAirPlayAudio.Service
+
+[WinAirPlayAudio.Service]
+DisplayName = %WinAirPlayAudio.ServiceDesc%
+ServiceType = 1
+StartType = 3
+ErrorControl = 1
+ServiceBinary = %13%\WinAirPlayAudio.sys
+
+[WinAirPlayAudio_Device.NT.HW]
+AddReg = WinAirPlayAudio.Hardware.AddReg
+
+[WinAirPlayAudio.Hardware.AddReg]
+; FILE_DEVICE_SOUND
+HKR,,DeviceType,0x00010001,0x0000001D
+; PortCls/KsProxy audio clients require access to the audio device object.
+; SDDL_DEVOBJ_SYS_ALL_ADM_RWX_WORLD_RWX_RES_RWX is retained from the sample.
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GRGWGX;;;BA)(A;;GRGWGX;;;WD)(A;;GRGWGX;;;RC)"
+
+[WinAirPlayAudio_Device.NT.Wdf]
+KmdfService = WinAirPlayAudio,WinAirPlayAudio.Wdf
+
+[WinAirPlayAudio.Wdf]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+; Non-localizable
+Proxy.CLSID = "{17CCA71B-ECD7-11D0-B908-00A0C9223196}"
+KSCATEGORY_AUDIO = "{6994AD04-93EF-11D0-A3CC-00A0C9223196}"
+KSCATEGORY_RENDER = "{65E8773E-8F56-11D0-A3B9-00A0C9223196}"
+KSCATEGORY_REALTIME = "{EB115FFC-10C8-4964-831D-6DCB02E6F23F}"
+KSCATEGORY_TOPOLOGY = "{DDA54A40-1E4C-11D1-A050-405705C10000}"
+KSNODETYPE_ANY = "{00000000-0000-0000-0000-000000000000}"
+PKEY_AudioEndpoint_Association = "{1DA5D803-D492-4EDD-8C23-E0C0FFEE7F0E},2"
+PKEY_AudioEndpoint_Supports_EventDriven_Mode = "{1DA5D803-D492-4EDD-8C23-E0C0FFEE7F0E},7"
+KSNAME_Wave = "WaveSpeaker"
+KSNAME_Topology = "TopologySpeaker"
+
+; Localizable
+ProviderName = "WinAirPlayAudio"
+ManufacturerName = "WinAirPlayAudio"
+DiskName = "WinAirPlayAudio Driver Package"
+WinAirPlayAudio.DeviceDesc = "WinAirPlayAudio Virtual Receiver"
+WinAirPlayAudio.ServiceDesc = "WinAirPlayAudio Virtual Render Driver"
+WinAirPlayAudio.Wave.FriendlyName = "WinAirPlayAudio Receiver"
+WinAirPlayAudio.Topology.FriendlyName = "WinAirPlayAudio Receiver"

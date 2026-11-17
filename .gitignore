@@ -1,0 +1,35 @@
+/target/
+/artifacts/
+# Private diagnostics, machine records, investigation notes, and secrets.
+/.local/
+# Legacy diagnostics must not be reintroduced into source control.
+/.diagnostics/
+/.tools/
+/.vs/
+/.vscode/
+*.user
+*.suo
+*.VC.db
+*.VC.VC.opendb
+*.log
+*.etl
+*.dmp
+*.cer
+*.pfx
+*.p12
+*.pvk
+*.snk
+*.pcap
+*.pcapng
+*.pem
+*.key
+*.ppk
+.env
+.env.*
+driver/**/x64/
+driver/**/Debug/
+driver/**/Release/
+driver/obj/
+driver/packages/
+driver/out/
+installer/staging/

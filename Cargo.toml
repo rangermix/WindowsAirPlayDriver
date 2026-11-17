@@ -1,0 +1,52 @@
+[workspace]
+resolver = "2"
+members = [
+    "shared",
+    "service",
+    "tools",
+]
+
+[workspace.package]
+version = "0.1.1-rc.3"
+edition = "2024"
+rust-version = "1.97"
+license = "AGPL-3.0-only"
+
+[workspace.dependencies]
+clap = { version = "=4.6.4", features = ["derive"] }
+ctrlc = "=3.5.2"
+getrandom = "=0.2.17"
+hex = "=0.4.3"
+hound = "=3.5.1"
+md-5 = "=0.10.6"
+mdns-sd = "=0.20.2"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.151"
+socket2 = "=0.6.5"
+thiserror = "=2.0.19"
+tracing = "=0.1.44"
+tracing-subscriber = { version = "=0.3.23", features = ["env-filter", "json"] }
+uuid = { version = "=1.24.0", features = ["v5", "serde"] }
+windows = "=0.62.2"
+windows-service = "=0.8.1"
+x25519-dalek = "=2.0.1"
+zeroize = "=1.9.0"
+winairplay-shared = { path = "shared" }
+winairplay-service = { path = "service" }
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+panic = "abort"
+strip = "debuginfo"

@@ -1,0 +1,61 @@
+name: Bug report
+description: Report a reproducible source, build, mock, or installed-driver problem.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report security vulnerabilities privately using SECURITY.md. This source preview is experimental. AirPlay 2 is unsupported.
+        Share only a short sanitized error excerpt. Do not upload raw audio, packet captures, dumps, private diagnostics, credentials, pairing material, certificates/private keys, or complete machine inventories. Replace usernames, local paths, device names, addresses, and receiver identifiers with placeholders.
+  - type: input
+    id: version
+    attributes:
+      label: Source and package version
+      description: SemVer, Git commit, whether the checkout has local changes, and installed package version if relevant.
+      placeholder: 0.1.0 / commit ... / clean or locally modified / installed version ...
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Where was the failure observed?
+      options:
+        - Source or build tooling
+        - Unit or deterministic mock integration test
+        - Direct sender with a physical receiver
+        - Installed service or virtual driver
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Relevant environment
+      description: Windows edition/build and x64 architecture; toolchain versions for builds; receiver model/firmware and wired/Wi-Fi for physical tests. Include only what helps reproduce this problem.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Exact commands or short ordered steps. Keep privileged actions explicit; do not enable test signing or install a driver solely to file a report.
+    validations:
+      required: true
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: Expected and actual behavior
+      description: State each separately. A successful mock or protocol handshake does not establish audible playback.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence and validation boundary
+      description: A short relevant error excerpt, test result, and which installed/hardware/recovery checks were NOT RUN. Do not attach complete logs or private files.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed secrets, raw audio/captures/dumps, and personal or machine identifiers from this report.
+          required: true

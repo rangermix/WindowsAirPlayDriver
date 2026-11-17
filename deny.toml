@@ -1,0 +1,35 @@
+[graph]
+targets = ["x86_64-pc-windows-msvc"]
+all-features = true
+
+[advisories]
+ignore = []
+
+[licenses]
+confidence-threshold = 0.9
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "Unicode-3.0",
+]
+
+# AGPL applies to project-owned workspace crates only. Third-party dependencies
+# must continue to satisfy the permissive allowlist above.
+[[licenses.exceptions]]
+name = "winairplay-shared"
+allow = ["AGPL-3.0-only"]
+
+[[licenses.exceptions]]
+name = "winairplay-service"
+allow = ["AGPL-3.0-only"]
+
+[[licenses.exceptions]]
+name = "winairplay-tools"
+allow = ["AGPL-3.0-only"]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

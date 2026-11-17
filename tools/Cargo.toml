@@ -1,0 +1,29 @@
+[package]
+name = "winairplay-tools"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+clap.workspace = true
+ctrlc.workspace = true
+hound.workspace = true
+mdns-sd.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+uuid.workspace = true
+windows = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_JobObjects",
+    "Win32_System_Threading",
+] }
+winairplay-shared.workspace = true
+winairplay-service.workspace = true
+zeroize.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,28 @@
+name: Feature request
+description: Describe a user need and observable acceptance criteria.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check the current limitations and AirPlay 2 plan before proposing expanded support. Do not include private device inventories, credentials, raw audio/captures, dumps, or pairing material.
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: What are you trying to do, and what currently prevents it?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the desired result and relevant alternatives.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria and validation
+      description: Observable success and failure behavior, cleanup/recovery expectations, relevant Windows/receiver targets, and any hardware validation you can provide.
+    validations:
+      required: true

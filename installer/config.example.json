@@ -1,0 +1,15 @@
+{
+  "manage_endpoints": true,
+  "discovery_query_interval_ms": 4000,
+  "offline_grace_ms": 8000,
+  "idle_disconnect_ms": 5000,
+  "retry_initial_ms": 250,
+  "retry_max_ms": 30000,
+  "endpoint_create_timeout_ms": 15000,
+  "capture_queue_packets": 64,
+  "raop_sync_latency_ms": 500,
+  "txt_max_records": 64,
+  "txt_max_total_bytes": 8192,
+  "txt_max_value_bytes": 2048,
+  "rtsp_max_header_bytes": 32768
+}

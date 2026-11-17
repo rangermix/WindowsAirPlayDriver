@@ -1,0 +1,109 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  version:
+    name: Version and release tooling
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 15
+    steps:
+      - name: Checkout the triggering commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Check source version
+        run: .\scripts\Version.ps1 -Check
+
+      - name: Test source-only workflow and release tooling fixtures
+        run: |
+          .\scripts\Test-ReleaseArchive.ps1
+          .\scripts\Test-InstallerRelease.ps1
+          .\scripts\Test-CiSigning.ps1
+          .\.github\scripts\Test-GuiSigning.ps1
+          .\.github\scripts\Test-ReleaseWorkflow.ps1
+
+      - name: Lint workflows with the checksum-pinned portable actionlint
+        run: .\.github\scripts\Test-Workflows.ps1
+
+      - name: Compile harmless native GUI previews without secrets or execution
+        run: .\build.ps1 -GuiWizards -PreviewWizard -WizardOutputDirectory (Join-Path $env:RUNNER_TEMP 'gui-preview-validation')
+
+  rust:
+    name: Build, test and package ${{ matrix.configuration }}
+    needs: version
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - name: Checkout the triggering commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Verify hosted build prerequisites
+        run: .\.github\scripts\Test-CiToolchain.ps1
+
+      - name: Restore pinned toolchain and packages
+        run: .\build.ps1 -Bootstrap
+
+      - name: Install the pinned advisory checker in runner temporary storage
+        if: matrix.configuration == 'Release'
+        run: |
+          cargo +1.97.1 install cargo-deny --locked --version 0.20.2 --root (Join-Path $env:RUNNER_TEMP 'cargo-deny')
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned cargo-deny installation failed.' }
+
+      - name: Check locked Windows dependencies against the current RustSec database
+        if: matrix.configuration == 'Release'
+        run: |
+          $deny = Join-Path $env:RUNNER_TEMP 'cargo-deny\bin\cargo-deny.exe'
+          & $deny --version
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned cargo-deny is unavailable.' }
+          & $deny --locked --target x86_64-pc-windows-msvc --config deny.toml check advisories licenses sources
+          if ($LASTEXITCODE -ne 0) { throw 'Dependency advisory/license/source check failed.' }
+          $cargoRoot = if ($env:CARGO_HOME) { $env:CARGO_HOME } else { Join-Path $env:USERPROFILE '.cargo' }
+          $databaseRoot = Join-Path $cargoRoot 'advisory-dbs'
+          foreach ($database in Get-ChildItem -LiteralPath $databaseRoot -Directory -ErrorAction Stop) {
+            Write-Host "Advisory database revision: $($database.Name)"
+            git -C $database.FullName rev-parse HEAD
+            if ($LASTEXITCODE -ne 0) { throw 'Cannot record the advisory database revision.' }
+          }
+
+      - name: Format, Clippy, unit/process and mock integration tests, user-mode build
+        env:
+          BUILD_CONFIGURATION: ${{ matrix.configuration }}
+        run: |
+          .\build.ps1 -Configuration $env:BUILD_CONFIGURATION -Test -UserModeOnly
+
+      - name: Rebuild the Debug driver
+        if: matrix.configuration == 'Debug'
+        run: .\build.ps1 -Driver -Configuration Debug
+
+      - name: Rebuild the Release driver and complete unsigned package
+        if: matrix.configuration == 'Release'
+        run: .\build.ps1 -Package -Configuration Release
+
+      - name: Verify the bounded unsigned developer archive
+        if: matrix.configuration == 'Release'
+        run: .\scripts\New-ReleaseBundle.ps1 -Configuration Release -OutputDirectory (Join-Path $env:RUNNER_TEMP 'release-bundle') | Out-Null
