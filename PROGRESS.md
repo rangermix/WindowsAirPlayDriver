@@ -6,6 +6,8 @@ unresolved acceptance, and [VALIDATION.md](VALIDATION.md) records evidence.
 
 ## Current implementation
 
+- The [README screenshots](README.md#how-it-looks) show a previously installed
+  AirPlay endpoint in Windows Sound and Volume mixer.
 - The driver exposes Windows playback endpoints for eligible classic receivers.
   It captures audio before endpoint volume/mute. Use receiver controls to mute
   remote playback during testing.

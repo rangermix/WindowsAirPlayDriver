@@ -14,6 +14,20 @@ prototype for controlled testing, not a production-certified driver.
 > outgoing audio. Use the receiver's own controls; Windows mute cannot be relied
 > on to silence remote playback.
 
+## How it looks
+
+**Settings → System → Sound** lists the receiver as an output ending in
+**(AirPlay)**.
+
+![Windows Sound settings listing the AirPlay output with its receiver name hidden](docs/images/windows-sound-settings.png)
+
+The **Volume mixer** also lists the receiver in its **Output device** menu.
+
+![Windows Volume mixer output menu with the AirPlay receiver name hidden](docs/images/windows-volume-mixer.png)
+
+These screenshots show an installed endpoint on a Chinese-language Windows 11
+system. Receiver names are redacted.
+
 ## Get started
 
 This source preview includes build and test instructions. Start with the

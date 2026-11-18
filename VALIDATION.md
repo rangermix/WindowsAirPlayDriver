@@ -10,7 +10,7 @@ See the [release checklist](docs/release-checklist.md) for remaining gates.
 
 - Repository and source checks passed on a fresh, uncommitted Git repository.
   The private originals and their inventory are retained separately. The
-  candidate excludes prior logs, captures, screenshots and generated files.
+  initial snapshot excluded prior logs, captures and generated files.
 - Rust formatting, warnings-denied Clippy, 216 Debug workspace tests (two
   ignored) and the Release user-mode build passed. The locked Windows x64
   dependency policy and repository/version/driver contracts passed.
@@ -22,6 +22,13 @@ See the [release checklist](docs/release-checklist.md) for remaining gates.
 - Full unsigned packaging of this candidate and hosted CI are **NOT RUN**.
   Packaging requires a recorded source commit. From a clean committed checkout,
   run the documented Release package command and verify its copied MS-PL text.
+
+## README screenshots
+
+Both README images match the original cropped PNG exports. Visual review
+confirmed that receiver names are redacted and account, host and network details
+are absent. The PNGs contain only image chunks. The screenshots document
+endpoint visibility in Windows Sound and Volume mixer.
 
 ## Earlier implementation evidence
 

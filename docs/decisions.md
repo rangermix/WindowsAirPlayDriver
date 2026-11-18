@@ -562,8 +562,9 @@ rewrite history or publish releases. [Local artifacts](local-artifacts.md) owns 
 bounded-path/hash verification procedure; DEF-008/013 retain relevant acceptance.
 
 The root README owns user-facing scope and getting started. The docs index
-routes technical guidance and status records. Keep local screenshots and
-machine identifiers in private development records.
+routes technical guidance and status records. Keep raw screenshots and machine
+identifiers in private development records. Publish cropped screenshots after
+reviewing the visible content and embedded metadata.
 
 ## D-032 — AGPLv3 for original code, retained component licenses
 

@@ -209,6 +209,9 @@ The RAOP API comment still describes type-1 preflight as server authentication.
 The threat model now describes aggregate RTSP byte bounds and qualified
 redaction for opt-in wire tracing.
 
+The README screenshots show endpoint visibility on a prior installation.
+See [the image review](../VALIDATION.md#readme-screenshots).
+
 ## DEF-009 — Contributor, CI and version/release baseline
 
 **Status:** RESOLVED. **Scope:** contributor/CI/version/test-prerelease baseline;
